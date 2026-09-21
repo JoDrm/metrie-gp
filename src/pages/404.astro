@@ -1,0 +1,88 @@
+---
+import { ArrowRight } from 'lucide-astro';
+import Layout from '../layouts/Layout.astro';
+import { services } from '../siteConfig';
+---
+
+<Layout
+  title="Page introuvable (404)"
+  description="La page demandée n'existe pas ou a été déplacée. Retrouvez nos services de scan 3D laser et de modélisation BIM en Guadeloupe."
+  path="/404"
+>
+  <main class="page-main">
+    <section class="page-hero">
+      <div class="block">
+        <div class="tag">Erreur 404</div>
+        <h1 class="page-title">Cette page<br /><em>n'existe pas.</em></h1>
+        <p class="page-lede">
+          Le lien est peut-être obsolète, ou l'adresse comporte une faute de frappe.
+          Voici les points d'entrée les plus utiles.
+        </p>
+
+        <div class="nf-links">
+          <a href="/" class="nf-link"><strong>Accueil</strong><span>Le studio et nos livrables</span></a>
+          <a href="/services" class="nf-link"><strong>Nos services</strong><span>Scan 3D, BIM, plans, visite virtuelle</span></a>
+          <a href="/projets" class="nf-link"><strong>Nos projets</strong><span>Études de cas et maquettes en ligne</span></a>
+          <a href="/blog" class="nf-link"><strong>Blog</strong><span>Méthode, technique et retours de chantier</span></a>
+        </div>
+
+        <h2 class="nf-h2">Nos services</h2>
+        <ul class="nf-services">
+          {services.map((s) => (
+            <li>
+              <a href={`/services/${s.slug}`}>{s.name} <ArrowRight size={14} /></a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="hero-cta" style="margin-top: 36px;">
+          <a href="/contact" class="btn-primary">Nous contacter</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .nf-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+    margin-top: 34px;
+  }
+  .nf-link {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+  .nf-link:hover { border-color: var(--accent); }
+  .nf-link span { font-size: 13px; color: var(--ink-dim); }
+
+  .nf-h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 40px 0 14px;
+  }
+  .nf-services { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+  .nf-services li { list-style: none; }
+  .nf-services a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--line);
+    padding: 8px 14px;
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--ink-2);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .nf-services a:hover { border-color: var(--accent); color: var(--accent); }
+</style>

@@ -4378,3 +4378,61 @@ body.nav-open { overflow: hidden; }
   .blog-list-section { padding-bottom: 72px; }
   .blog-grid { gap: 24px; }
 }
+
+/* ============================================================
+   Footer — zone d'intervention (ajout SEO local)
+   ============================================================ */
+.footer-area {
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+}
+
+/* ============================================================
+   Blog — maillage interne en pied d'article
+   (services liés + articles voisins)
+   ============================================================ */
+.post-links { margin-top: 56px; }
+.post-links h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 18px;
+}
+.post-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.post-link-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.post-link-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.post-link-card time,
+.post-link-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+}
+.post-link-card strong { font-weight: 600; line-height: 1.35; }
+.post-link-desc { font-size: 14px; color: var(--ink-dim); line-height: 1.55; }
+.post-link-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--accent);
+}

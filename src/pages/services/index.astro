@@ -1,0 +1,253 @@
+---
+import { ArrowRight, Check, MapPin } from 'lucide-astro';
+import Layout from '../../layouts/Layout.astro';
+import { services, serviceArea, specs } from '../../siteConfig';
+import { itemListSchema, faqSchema } from '../../lib/schema';
+
+const title = 'Nos services — Scan 3D laser & modélisation BIM en Guadeloupe';
+const description =
+  "Scan 3D laser, Scan-to-BIM Revit et ArchiCAD, plans DWG, modèle 3D et visite virtuelle. Relevé d'existant haute précision en Guadeloupe pour architectes, bureaux d'études et collectivités.";
+const keywords =
+  'services scan 3D Guadeloupe, scan to BIM, relevé 3D laser, plans DWG, maquette Revit, visite virtuelle, modélisation 3D, relevé existant 971';
+
+const breadcrumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'Nos services', path: '/services' },
+];
+
+const faq = [
+  {
+    q: 'Quels services propose Metrie GP en Guadeloupe ?',
+    a: "Nous réalisons du scan 3D laser (nuage de points), de la modélisation Scan-to-BIM sous Revit et ArchiCAD, des plans, coupes et façades DWG, ainsi que des modèles 3D et visites virtuelles. L'ensemble est produit à partir d'un même relevé laser de l'existant.",
+  },
+  {
+    q: 'Intervenez-vous en dehors de la Guadeloupe ?',
+    a: "La Guadeloupe est notre zone d'intervention : Grande-Terre, Basse-Terre, Marie-Galante, Les Saintes et La Désirade. Pour un projet situé ailleurs, contactez-nous, nous étudions la demande au cas par cas.",
+  },
+  {
+    q: 'Quel est le délai pour obtenir un devis ?',
+    a: `Nous répondons sous ${specs.quoteDelay}. Le devis est gratuit et sans engagement. Plus vous nous donnez d'éléments sur la surface, le nombre de niveaux et l'usage final du relevé, plus le chiffrage sera juste.`,
+  },
+  {
+    q: 'Peut-on commander plusieurs prestations ensemble ?',
+    a: "Oui, et c'est le cas le plus fréquent. Un même relevé alimente le nuage de points, la maquette BIM et les plans DWG. Commander l'ensemble en une fois évite de refaire une captation et réduit le coût global.",
+  },
+];
+
+const schemas = [
+  itemListSchema(
+    services.map((s) => ({
+      name: s.name,
+      path: `/services/${s.slug}`,
+      description: s.short,
+    })),
+  ),
+  faqSchema(faq),
+];
+---
+
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  path="/services"
+  active="/services"
+  breadcrumbs={breadcrumbs}
+  extraSchema={schemas}
+>
+  <main class="page-main">
+    <section class="page-hero">
+      <div class="block">
+        <div class="tag">Nos services</div>
+        <h1 class="page-title">Du scan laser<br /><em>au livrable exploitable.</em></h1>
+        <p class="page-lede">
+          Une seule captation sur site, quatre familles de livrables. Nous relevons
+          l'existant au scanner laser 3D, puis nous le restituons dans le format
+          qui sert réellement votre projet — nuage de points, maquette BIM, plans
+          2D ou restitution immersive.
+        </p>
+        <p class="svc-geo">
+          <MapPin size={14} /> Guadeloupe — Grande-Terre, Basse-Terre, Marie-Galante,
+          Les Saintes et La Désirade. Mise en place sous {specs.mobilization}.
+        </p>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="svc-hub">
+        {services.map((s) => (
+          <article class="svc-hub-card">
+            <div class="svc-hub-num">{s.num}</div>
+            <h2><a href={`/services/${s.slug}`}>{s.name}</a></h2>
+            <p class="svc-hub-short">{s.short}</p>
+            <ul class="svc-list">
+              {s.deliverables.slice(0, 3).map((d) => (
+                <li><Check size={15} /> <span>{d}</span></li>
+              ))}
+            </ul>
+            <ul class="svc-chips">
+              {s.formats.slice(0, 4).map((f) => <li>{f}</li>)}
+            </ul>
+            <a href={`/services/${s.slug}`} class="btn-text svc-hub-go">
+              En savoir plus <ArrowRight size={15} />
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="block svc-section">
+      <h2>Comment se déroule un projet</h2>
+      <div class="svc-steps">
+        <div class="svc-step">
+          <span class="svc-step-n">01</span>
+          <h3>Cadrage</h3>
+          <p>Vous décrivez le bâtiment et l'usage attendu du relevé. Nous revenons sous {specs.quoteDelay} avec un devis chiffré et un délai.</p>
+        </div>
+        <div class="svc-step">
+          <span class="svc-step-n">02</span>
+          <h3>Captation</h3>
+          <p>Intervention sur site au scanner {specs.scanner}, en plusieurs stations recalées. Site occupé possible, sans interruption d'activité.</p>
+        </div>
+        <div class="svc-step">
+          <span class="svc-step-n">03</span>
+          <h3>Traitement</h3>
+          <p>Consolidation, nettoyage et segmentation du nuage. Nuage livrable sous {specs.deliveryCloud} après la captation.</p>
+        </div>
+        <div class="svc-step">
+          <span class="svc-step-n">04</span>
+          <h3>Restitution</h3>
+          <p>Production des livrables choisis — maquette BIM, plans DWG, visite virtuelle. Comptez {specs.deliveryBim} pour une maquette complète.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block svc-section svc-section-narrow">
+      <h2>Questions fréquentes</h2>
+      <div class="svc-faq">
+        {faq.map((item) => (
+          <details>
+            <summary><h3>{item.q}</h3></summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="block page-cta-block">
+      <div class="page-cta">
+        <h2>Un projet de relevé en Guadeloupe ?</h2>
+        <p>Devis gratuit sous {specs.quoteDelay}, sans engagement.</p>
+        <a href="/contact" class="btn-primary">Démarrer un projet</a>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .svc-geo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+    max-width: 60ch;
+    line-height: 1.6;
+  }
+
+  .svc-hub {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .svc-hub-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 30px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .svc-hub-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+  }
+  .svc-hub-card h2 { font-size: 22px; line-height: 1.25; margin: 0; }
+  .svc-hub-card h2 a { color: var(--ink); text-decoration: none; }
+  .svc-hub-card h2 a:hover { color: var(--accent); }
+  .svc-hub-short { color: var(--ink-2); font-size: 15px; line-height: 1.55; }
+  .svc-hub-go { margin-top: auto; }
+
+  .svc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .svc-list li {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--ink-2);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .svc-list li :global(svg) { flex: 0 0 auto; margin-top: 3px; color: var(--accent); }
+
+  .svc-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .svc-chips li {
+    list-style: none;
+    border: 1px solid var(--line);
+    padding: 5px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+  }
+
+  .svc-section { max-width: 1200px; }
+  .svc-section h2 { margin-bottom: 24px; }
+
+  .svc-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px;
+  }
+  .svc-step { border-top: 1px solid var(--line); padding-top: 16px; }
+  .svc-step-n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+  }
+  .svc-step h3 { font-size: 17px; font-weight: 500; margin: 10px 0 8px; }
+  .svc-step p { color: var(--ink-dim); font-size: 14px; line-height: 1.6; }
+
+  /* Colonne resserree et centree : la section fait 1200px, l'accordeon 860px.
+     Sans cela le bloc FAQ restait cale a gauche, juste au-dessus d'un CTA
+     centre — d'ou un desequilibre visible. */
+  .svc-section-narrow { max-width: 860px; }
+
+  .svc-faq { border-top: 1px solid var(--line); }
+  .svc-faq details { border-bottom: 1px solid var(--line); }
+  .svc-faq summary {
+    cursor: pointer;
+    padding: 18px 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .svc-faq summary::-webkit-details-marker { display: none; }
+  .svc-faq summary::after {
+    content: '+';
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-dim);
+    flex: 0 0 auto;
+  }
+  .svc-faq details[open] summary::after { content: '−'; }
+  .svc-faq summary h3 { font-size: 17px; font-weight: 500; margin: 0; }
+  .svc-faq details p { padding: 0 0 20px; color: var(--ink-2); max-width: 72ch; }
+</style>

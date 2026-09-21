@@ -1,5 +1,5 @@
 ---
-import { site } from '../siteConfig';
+import { site, services, serviceArea } from '../siteConfig';
 const year = new Date().getFullYear();
 ---
 
@@ -8,27 +8,33 @@ const year = new Date().getFullYear();
     <div class="footer-brand">
       <h3>Metrie <em>GP</em></h3>
       <p>
-        Studio de scan 3D LiDAR haute précision pour le bâtiment, l'industrie,
-        l'ingénierie et le patrimoine — basé en Guadeloupe, intervention dans
-        toutes les Antilles françaises.
+        Studio de scan 3D laser et de modélisation BIM haute précision pour le
+        bâtiment, l'industrie et le patrimoine — basé au {site.address.locality},
+        intervention sur toute la Guadeloupe.
+      </p>
+      <p class="footer-area">
+        {serviceArea.areas.map((a) => a.name).join(' · ')}
       </p>
     </div>
     <div>
       <h4>Navigation</h4>
       <a href="/">Accueil</a>
-      <a href="/demo">Démo 3D</a>
-      <a href="/outils">Nos outils</a>
+      <a href="/services">Nos services</a>
       <a href="/projets">Nos projets</a>
+      <a href="/outils">Nos outils</a>
+      <a href="/blog">Blog</a>
+      <a href="/demo">Démo 3D</a>
     </div>
     <div>
       <h4>Services</h4>
-      <a href="/#services">Nos livrables</a>
-      <a href="/outils">Nos outils</a>
-      <a href="/projets">Nos projets</a>
+      {services.map((s) => (
+        <a href={`/services/${s.slug}`}>{s.navLabel}</a>
+      ))}
     </div>
     <div>
       <h4>Contact</h4>
       <a href="/contact">Formulaire de devis</a>
+      <a href="/rss.xml">Flux RSS du blog</a>
       <a href={`mailto:${site.email}`}>{site.email}</a>
       {site.phoneDisplay.map((display, i) => (
         <a href={`tel:${site.phone[i]}`}>{display}</a>

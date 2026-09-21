@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site, territories } from '../siteConfig';
+import { site, serviceArea } from '../siteConfig';
 import { faqSchema, serviceSchema } from '../lib/schema';
 
 const title = 'Scan 3D Guadeloupe — Relevé LiDAR & Scan-to-BIM';
@@ -14,7 +14,6 @@ const breadcrumbs = [
   { name: 'Scan 3D Guadeloupe', path: '/scan-3d-guadeloupe' },
 ];
 
-const guadeloupe = territories.find((t) => t.slug === 'guadeloupe')!;
 
 /* Communes regroupées par bassin pour un maillage géographique lisible
    (et non un simple mur de noms de villes). */
@@ -108,8 +107,8 @@ const faq = faqSchema([
     a: "Nuage de points en E57, LAS ou LAZ ; plans 2D en DWG et DXF ; maquettes BIM en RVT (Revit), PLN (ArchiCAD) et IFC 2×3 / IFC 4 ; visites virtuelles au format web. Nous nous adaptons à la charte BIM de votre projet.",
   },
   {
-    q: 'Intervenez-vous en dehors de la Guadeloupe ?',
-    a: "Oui. Depuis notre base au Gosier, nous intervenons en Martinique, à Saint-Martin, à Saint-Barthélemy et en Guyane. Les délais de mise en place sont adaptés au territoire concerné.",
+    q: 'Intervenez-vous à Marie-Galante, aux Saintes et à La Désirade ?',
+    a: "Oui. Depuis notre base au Gosier, nous couvrons toute la Guadeloupe, îles du Sud comprises. Le scanner voyage en bateau avec l'opérateur ; la traversée est intégrée au devis.",
   },
 ]);
 
@@ -221,7 +220,7 @@ const serviceLd = serviceSchema({
         <div class="tag">Couverture</div>
         <h2>Toute la Guadeloupe,<br /><em>îles du Sud comprises.</em></h2>
         <p class="page-lede" style="margin-top: 18px;">
-          {guadeloupe.blurb}
+          {serviceArea.blurb}
         </p>
       </div>
 
@@ -328,12 +327,13 @@ const serviceLd = serviceSchema({
           de votre projet.
         </p>
 
-        <h3>Intervenez-vous en dehors de la Guadeloupe ?</h3>
+        <h3>Intervenez-vous à Marie-Galante, aux Saintes et à La Désirade ?</h3>
         <p>
-          Oui. Depuis notre base du Gosier, nous intervenons en
-          <strong>Martinique</strong>, à <strong>Saint-Martin</strong>, à
-          <strong>Saint-Barthélemy</strong> et en <strong>Guyane</strong>.
-          Les délais de mise en place sont adaptés au territoire concerné.
+          Oui. Depuis notre base du Gosier, nous couvrons toute la Guadeloupe,
+          îles du Sud comprises : <strong>Marie-Galante</strong>,
+          <strong>Les Saintes</strong> et <strong>La Désirade</strong>. Le
+          scanner voyage en bateau avec l'opérateur ; la traversée est intégrée
+          au devis.
         </p>
       </div>
     </section>

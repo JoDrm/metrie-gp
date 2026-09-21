@@ -1,8 +1,9 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { ArrowLeft, CalendarDays, Clock, Tag, MessageSquare } from 'lucide-astro';
+import { ArrowLeft, ArrowRight, CalendarDays, Clock, Tag, MessageSquare } from 'lucide-astro';
 import Layout from '../../layouts/Layout.astro';
 import { blogPostingSchema } from '../../lib/schema';
+import { services } from '../../siteConfig';
 import { formatDate, isoDate, readingTime } from '../../lib/date';
 
 export async function getStaticPaths() {
@@ -38,6 +39,21 @@ const articleSchema = blogPostingSchema({
 });
 
 const minutes = readingTime(post.body);
+
+/* Maillage interne — les articles n'avaient qu'un seul lien sortant chacun,
+   ce qui laissait le blog quasi déconnecté du reste du site.
+   1. Articles voisins : ceux qui partagent le plus de tags.
+   2. Services liés : ceux dont la page cite cet article. */
+const others = await getCollection('blog', ({ data, slug }) =>
+  slug !== post.slug && (import.meta.env.PROD ? !data.draft : true),
+);
+const relatedPosts = others
+  .map((p) => ({ p, score: p.data.tags.filter((t) => data.tags.includes(t)).length }))
+  .sort((a, b) => b.score - a.score || b.p.data.pubDate.valueOf() - a.p.data.pubDate.valueOf())
+  .slice(0, 3)
+  .map((x) => x.p);
+
+const relatedServices = services.filter((s) => s.related.includes(post.slug));
 ---
 
 <Layout
@@ -81,6 +97,37 @@ const minutes = readingTime(post.body);
       <article class="legal-body blog-body">
         <Content />
       </article>
+
+      {relatedServices.length > 0 && (
+        <aside class="post-links">
+          <h2>Le service correspondant</h2>
+          <div class="post-links-grid">
+            {relatedServices.map((s) => (
+              <a href={`/services/${s.slug}`} class="post-link-card">
+                <span class="post-link-num">{s.num}</span>
+                <strong>{s.name}</strong>
+                <span class="post-link-desc">{s.short}</span>
+                <span class="post-link-go">Découvrir <ArrowRight size={14} /></span>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
+
+      {relatedPosts.length > 0 && (
+        <aside class="post-links">
+          <h2>À lire ensuite</h2>
+          <div class="post-links-grid">
+            {relatedPosts.map((r) => (
+              <a href={`/blog/${r.slug}`} class="post-link-card">
+                <time datetime={isoDate(r.data.pubDate)}>{formatDate(r.data.pubDate)}</time>
+                <strong>{r.data.title}</strong>
+                <span class="post-link-desc">{r.data.description}</span>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
 
       <div class="flex flex-col gap-4 mt-10 sm:flex-row sm:items-center sm:justify-between">
         <a href="/blog" class="btn-text"><ArrowLeft size={15} /> Retour au blog</a>

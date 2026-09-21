@@ -1,0 +1,327 @@
+---
+import { getCollection } from 'astro:content';
+import { ArrowRight, Check, MapPin, MessageSquare } from 'lucide-astro';
+import Layout from '../../layouts/Layout.astro';
+import { services, serviceArea, specs, site } from '../../siteConfig';
+import { faqSchema, serviceSchema } from '../../lib/schema';
+import { formatDate, isoDate } from '../../lib/date';
+
+export async function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const path = `/services/${service.slug}`;
+
+const breadcrumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'Nos services', path: '/services' },
+  { name: service.name, path },
+];
+
+// Autres services — maillage interne latéral entre pages sœurs.
+const siblings = services.filter((s) => s.slug !== service.slug);
+
+// Articles liés — maillage interne vers le blog.
+const allPosts = await getCollection('blog', ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true,
+);
+const relatedPosts = service.related
+  .map((slug) => allPosts.find((p) => p.slug === slug))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+const schemas = [
+  serviceSchema({
+    name: service.name,
+    description: service.description,
+    path,
+    deliverables: service.deliverables,
+  }),
+  faqSchema(service.faq),
+];
+---
+
+<Layout
+  title={service.title}
+  description={service.description}
+  keywords={service.keywords}
+  path={path}
+  active="/services"
+  breadcrumbs={breadcrumbs}
+  extraSchema={schemas}
+>
+  <main class="page-main">
+    <section class="page-hero">
+      <div class="block">
+        <nav class="svc-crumb" aria-label="Fil d'Ariane">
+          <a href="/">Accueil</a>
+          <span aria-hidden="true">/</span>
+          <a href="/services">Nos services</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{service.name}</span>
+        </nav>
+
+        <div class="tag">Service</div>
+        <h1 class="page-title">{service.h1}<br /><em>{service.h1Em}</em></h1>
+        <p class="page-lede">{service.lede}</p>
+
+        <p class="svc-geo">
+          <MapPin size={14} /> Intervention sur toute la Guadeloupe — mise en place sous {specs.mobilization}.
+        </p>
+
+        <div class="hero-cta" style="margin-top: 28px;">
+          <a href={`/contact?service=${service.slug}#contact`} class="btn-primary">Demander un devis</a>
+          <a href="/projets" class="btn-text">Voir nos projets <ArrowRight size={15} /></a>
+        </div>
+      </div>
+    </section>
+
+    {service.sections.map((section) => (
+      <section class="block svc-section">
+        <h2>{section.h2}</h2>
+        {section.body.map((p) => <p>{p}</p>)}
+      </section>
+    ))}
+
+    <section class="block svc-section">
+      <h2>Ce que vous recevez</h2>
+      <div class="svc-grid">
+        <div>
+          <h3 class="svc-sub">Livrables</h3>
+          <ul class="svc-list">
+            {service.deliverables.map((d) => (
+              <li><Check size={15} /> <span>{d}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 class="svc-sub">Formats</h3>
+          <ul class="svc-chips">
+            {service.formats.map((f) => <li>{f}</li>)}
+          </ul>
+
+          <h3 class="svc-sub" style="margin-top: 32px;">Cas d'usage fréquents</h3>
+          <ul class="svc-list">
+            {service.useCases.map((u) => (
+              <li><Check size={15} /> <span>{u}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block svc-section">
+      <h2>Où nous intervenons</h2>
+      <p class="page-lede">{serviceArea.blurb}</p>
+      <div class="svc-areas">
+        {serviceArea.areas.map((area) => (
+          <div class="svc-area">
+            <h3 class="svc-sub">{area.name}</h3>
+            <p>{area.cities.join(' · ')}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="block svc-section">
+      <h2>Questions fréquentes</h2>
+      <div class="svc-faq">
+        {service.faq.map((item) => (
+          <details>
+            <summary><h3>{item.q}</h3></summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    {relatedPosts.length > 0 && (
+      <section class="block svc-section">
+        <h2>À lire sur le sujet</h2>
+        <div class="svc-related">
+          {relatedPosts.map((post) => (
+            <a href={`/blog/${post.slug}`} class="svc-related-card">
+              <time datetime={isoDate(post.data.pubDate)}>{formatDate(post.data.pubDate)}</time>
+              <strong>{post.data.title}</strong>
+              <span>{post.data.description}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="block svc-section">
+      <h2>Nos autres services</h2>
+      <div class="svc-siblings">
+        {siblings.map((s) => (
+          <a href={`/services/${s.slug}`} class="svc-sibling">
+            <span class="svc-sibling-num">{s.num}</span>
+            <strong>{s.name}</strong>
+            <span class="svc-sibling-short">{s.short}</span>
+            <span class="svc-sibling-go">Découvrir <ArrowRight size={14} /></span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="block page-cta-block">
+      <div class="page-cta">
+        <h2>Un projet de {service.navLabel.toLowerCase()} ?</h2>
+        <p>Parlons-en. Devis gratuit sous {specs.quoteDelay}, sans engagement.</p>
+        <a href={`/contact?service=${service.slug}#contact`} class="btn-primary">
+          <MessageSquare size={16} /> Démarrer un projet
+        </a>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .svc-crumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    margin-bottom: 22px;
+  }
+  .svc-crumb a { color: var(--ink-dim); text-decoration: none; }
+  .svc-crumb a:hover { color: var(--accent); }
+  .svc-crumb [aria-current] { color: var(--ink-2); }
+
+  .svc-geo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+  }
+
+  .svc-section { max-width: 1200px; }
+  .svc-section h2 { margin-bottom: 20px; }
+  .svc-section > p {
+    max-width: 72ch;
+    margin-bottom: 18px;
+    color: var(--ink-2);
+  }
+
+  .svc-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 16px;
+  }
+
+  .svc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 8px;
+  }
+  @media (max-width: 860px) { .svc-grid { grid-template-columns: 1fr; gap: 36px; } }
+
+  .svc-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .svc-list li {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .svc-list li :global(svg) { flex: 0 0 auto; margin-top: 4px; color: var(--accent); }
+
+  .svc-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+  .svc-chips li {
+    list-style: none;
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+  }
+
+  .svc-areas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 28px;
+  }
+  @media (max-width: 860px) { .svc-areas { grid-template-columns: 1fr; gap: 22px; } }
+  .svc-area {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .svc-area p { color: var(--ink-dim); font-size: 14px; line-height: 1.6; }
+
+  .svc-faq { border-top: 1px solid var(--line); max-width: 860px; }
+  .svc-faq details { border-bottom: 1px solid var(--line); }
+  .svc-faq summary {
+    cursor: pointer;
+    padding: 18px 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .svc-faq summary::-webkit-details-marker { display: none; }
+  .svc-faq summary::after {
+    content: '+';
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-dim);
+    flex: 0 0 auto;
+  }
+  .svc-faq details[open] summary::after { content: '−'; }
+  .svc-faq summary h3 { font-size: 17px; font-weight: 500; margin: 0; }
+  .svc-faq details p { padding: 0 0 20px; color: var(--ink-2); max-width: 72ch; }
+
+  .svc-related, .svc-siblings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .svc-related-card, .svc-sibling {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .svc-related-card:hover, .svc-sibling:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .svc-related-card time, .svc-sibling-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+  }
+  .svc-related-card strong, .svc-sibling strong { font-weight: 600; line-height: 1.35; }
+  .svc-related-card span, .svc-sibling-short { font-size: 14px; color: var(--ink-dim); line-height: 1.55; }
+  .svc-sibling-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--accent) !important;
+  }
+</style>

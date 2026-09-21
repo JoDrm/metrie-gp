@@ -14,8 +14,8 @@ const keywords =
 
 const faq = faqSchema([
   {
-    q: 'Quels territoires Metrie GP couvre-t-il ?',
-    a: "Nous intervenons dans toute la Caraïbe française : Guadeloupe (base), Martinique, Saint-Martin, Saint-Barthélemy et Guyane. Délai de mise en place sous 48 h sur l'archipel guadeloupéen.",
+    q: 'Où intervient Metrie GP en Guadeloupe ?',
+    a: "Sur tout l'archipel : Grande-Terre, Basse-Terre, Marie-Galante, Les Saintes et La Désirade — de Pointe-à-Pitre à Basse-Terre en passant par la zone industrielle de Jarry. Mise en place sous 48 h.",
   },
   {
     q: "Qu'est-ce que le Scan-to-BIM ?",
@@ -23,7 +23,7 @@ const faq = faqSchema([
   },
   {
     q: 'Quelle est la précision de vos relevés ?',
-    a: "Notre scanner LiDAR mobile FJD Trion P2 atteint une précision absolue de ±2 cm avec géoréférencement GNSS. Chaque livraison inclut un rapport de conformité signé.",
+    a: "Notre scanner laser mobile FJD Trion P2 atteint une précision relative de ± 1,2 cm — celle qui gouverne vos métrés — et une précision absolue de ± 3 cm pour le positionnement géoréférencé. Chaque livraison est accompagnée d'un rapport de relevé.",
   },
   {
     q: 'En combien de temps livrez-vous un nuage de points ?',
@@ -52,7 +52,7 @@ const faq = faqSchema([
           Votre partenaire <br />en matière de <br /><span class="thin">relevé.</span>
         </h1>
         <p class="page-lede">
-         Metrie GP est un studio de relevé 3D LiDAR basé en Guadeloupe et dans la caraïbe. Nous transformons bâtiments, ouvrages d'arts et site industriels en nuages de points, maquette BIM exploitable en quelques jours.
+         Metrie GP est un studio de scan 3D laser basé en Guadeloupe. Nous transformons bâtiments, ouvrages d'art et sites industriels en nuages de points et en maquettes BIM exploitables en quelques jours.
         </p>
         <div class="hero-cta" style="margin-top: 28px;">
           <a href="/contact" class="btn-primary">Demander un devis</a>
@@ -64,7 +64,8 @@ const faq = faqSchema([
         <div class="viewer-frame">
           <iframe
             title="Maquette 3D d'une maison familiale à Sainte-Anne, Guadeloupe — Metrie GP"
-            src="https://sketchfab.com/models/affbc303467f4bdab8d5e3664f759d40/embed?camera=0&autostart=1"
+            data-src="https://sketchfab.com/models/affbc303467f4bdab8d5e3664f759d40/embed?camera=0&autostart=1"
+            loading="lazy"
             frameborder="0"
             allowfullscreen
             mozallowfullscreen="true"
@@ -94,7 +95,7 @@ const faq = faqSchema([
             <a href="/plans-permis-de-construire-guadeloupe" class="btn-text">Plans pour permis de construire →</a>
           </p>
           <p>
-           Metrie GP accompagne architectes, bureaux d'études, maîtres d'œuvre et collectivités dans la captation et la restitution numérique de l'existant. Nous intervenons partout dans les Antilles françaises — Guadeloupe, Martinique, Guyane, Saint-Martin, Saint-Barthélemy — avec un savoir-faire dans le domaine du bâtiment .
+           Metrie GP accompagne architectes, bureaux d'études, maîtres d'œuvre et collectivités dans la captation et la restitution numérique de l'existant. Nous intervenons sur toute la Guadeloupe — Grande-Terre, Basse-Terre, Marie-Galante, Les Saintes et La Désirade — avec un savoir-faire ancré dans le bâti local.
           </p>
           
         </div>
@@ -206,7 +207,7 @@ const faq = faqSchema([
                 <circle cx="12" cy="28" r="1.5" fill="currentColor" />
               </svg>
             </div>
-            <h3>Maquette BIm<br /><em>ArchiCAD / Revit</em></h3>
+            <h3>Maquette BIM<br /><em>ArchiCAD / Revit</em></h3>
             <p>
             Modélisation numérique fidèle à l’existant, produite à partir du nuage de points, pour une exploitation directe en phase de conception.
             </p>
@@ -236,7 +237,7 @@ const faq = faqSchema([
              <ul>
               <li >Visite virtuelle web (WebGL)</li>
               <li >Mesh photoréaliste temps réel</li>
-              <li >Archivage ahute densité</li>
+              <li >Archivage haute densité</li>
               <li >Digital twin industriel</li>
             </ul>
           
@@ -285,7 +286,7 @@ const faq = faqSchema([
             <h3>Visite virtuelle</h3>
             <p>
               Accès immersif au bâtiment relevé, directement depuis un navigateur, sans logiciel spécifique.
-              La visite permet de naviguer librement dans le projet, de prendre des mesures( à vérifier), et de consulter les espaces à distance comme si vous y étiez.
+              La visite permet de naviguer librement dans le projet, de prendre des mesures et de consulter les espaces à distance comme si vous y étiez.
 
             
             </p>
@@ -307,11 +308,28 @@ const faq = faqSchema([
     <SimulateurNuage />
 
     <section class="pb-20 flex flex-col justify-center items-center">
-      <div class="w-1/2 p-10 flex flex-col gap-4 border border-solid border-red-20 justify-center items-center">
+      <div class="w-1/2 p-10 flex flex-col gap-4 border border-solid border-line justify-center items-center">
         <h2>Un projet de relevé ?</h2>
         <p>Parlons-en. Devis gratuit sous 24 h ouvrées.</p>
         <a href="/contact" class="btn-primary">Démarrer un projet</a>
       </div>
     </section>
   </main>
+  <script is:inline>
+    /* La visionneuse Sketchfab du hero pese plusieurs Mo (WebGL + textures).
+       Chargee en direct, elle devenait l'element LCP de la page d'accueil.
+       On la lance apres le chargement complet, quand le navigateur est libre :
+       le titre s'affiche immediatement, la maquette arrive une seconde apres,
+       sans action de l'utilisateur. */
+    (function () {
+      var frame = document.querySelector('.hero-viewer iframe[data-src]');
+      if (!frame) return;
+      function boot() {
+        var idle = window.requestIdleCallback || function (fn) { setTimeout(fn, 200); };
+        idle(function () { frame.src = frame.getAttribute('data-src'); });
+      }
+      if (document.readyState === 'complete') boot();
+      else window.addEventListener('load', boot, { once: true });
+    })();
+  </script>
 </Layout>

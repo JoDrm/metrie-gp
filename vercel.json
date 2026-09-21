@@ -21,8 +21,7 @@
     { "source": "/performances", "destination": "/outils", "permanent": true },
     { "source": "/process.html", "destination": "/", "permanent": true },
     { "source": "/process", "destination": "/", "permanent": true },
-    { "source": "/services.html", "destination": "/#services", "permanent": true },
-    { "source": "/services", "destination": "/#services", "permanent": true }
+    { "source": "/services.html", "destination": "/services", "permanent": true }
   ],
   "headers": [
     {
